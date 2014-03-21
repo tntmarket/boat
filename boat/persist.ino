@@ -6,7 +6,8 @@ boolean FILLED;
 
 void start_writing() {
    READ_ONLY = false;
-   FILLED = EEPROM.read(1001);
+   /*FILLED = EEPROM.read(1001);*/
+   FILLED = false;
 }
 
 void persist(double front, double top, double bottom,
@@ -15,12 +16,12 @@ void persist(double front, double top, double bottom,
       return;
    }
    static int i = 0;
-   EEPROM.write(i, front);
-   EEPROM.write(i + 1, top);
-   EEPROM.write(i + 2, bottom);
-   EEPROM.write(i + 3, rudderAngle);
-   EEPROM.write(i + 4, thrust);
-   EEPROM.write(i + 5, refSideWall);
+   EEPROM.write(i, round(front));
+   EEPROM.write(i + 1, round(top));
+   EEPROM.write(i + 2, round(bottom));
+   EEPROM.write(i + 3, round(rudderAngle));
+   EEPROM.write(i + 4, round(thrust));
+   EEPROM.write(i + 5, round(refSideWall));
    i += 6;
    EEPROM.write(1000, i/6);
    if(i == MAX_EEPROM) {

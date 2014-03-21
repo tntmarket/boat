@@ -24,7 +24,7 @@ double getTop() {
    static NewPing top(TOP_TRIGGER_PIN,
                       TOP_ECHO_PIN,
                       MAX_DISTANCE_SIDE);
-   return cm(top.ping(), MAX_DISTANCE_SIDE);
+   return cm(top.ping(), MAX_DISTANCE_SIDE) - 1;
 }
 
 #define BOTTOM_TRIGGER_PIN 4
@@ -43,26 +43,26 @@ void setThrust(int thrust) {
 
 #define RUDDER_PIN 9
 Servo rudder;
+int currentAngle = 0;
 void setRudder(int angle) {
-   rudder.write(105 - angle);
+   if(angle > currentAngle + 1) {
+      angle = currentAngle + 1;
+   } else if(angle < currentAngle - 1) {
+      angle = currentAngle - 1;
+   }
+   currentAngle = angle;
+   rudder.write(98 - angle);
 }
 
-#define I4_PIN 1
-#define I3_PIN 2
 void initHardware() {
    pinMode(RUDDER_PIN, OUTPUT);
    rudder.attach(RUDDER_PIN);
 
    pinMode(THRUST_PIN, OUTPUT);
-   pinMode(I4_PIN, OUTPUT);
-   pinMode(I3_PIN, OUTPUT);
-   digitalWrite(I4_PIN, LOW);
-   digitalWrite(I3_PIN, HIGH);
 
    setThrust(0);
    setRudder(0);
 
-   /*start_writing()*/
-   /*Serial.begin(115200);*/
+   /*start_writing();*/
 }
 

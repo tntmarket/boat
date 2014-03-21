@@ -53,6 +53,7 @@ int bottom_i = -1;
 double getTop() {
    if(front_i == 0) {
       rudderCtrl.ClearHistory();
+      stateSwitchTime = millis();
    }
    top_i = (top_i + 3)%N;
    return SENSOR_VALUES[top_i];

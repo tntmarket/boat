@@ -3,7 +3,7 @@ import processing.serial.*;
 Serial boat;
 
 void setup() {
-   boat = new Serial(this, Serial.list()[0], 115200);
+   boat = new Serial(this, Serial.list()[0], 9600);
    size(1200, 600);
    background(200);
 }
@@ -24,11 +24,25 @@ int m;
 void draw() {
    float[] values = readSensors();
    //float[] values = {170, 30, 30, 25, 255, 30};
-   if(values.length >= 6) {
+   if(values.length >= 8) {
       background(200);
       boatDiagram(values[0], values[1], values[2], values[3], values[4], values[5]);
-      graphs(values[0], values[1], values[2], values[3], values[4], values[5]);
+      graphs(values[0], values[1], values[2], values[3], values[4], values[5], values[7]);
+      drawState(values[6]);
    }
+}
+
+void drawState(float state) {
+   resetMatrix();
+   pushStyle();
+   if(state == 0) {
+      fill(0, 100, 0);
+   } else {
+      fill(0, 0, 100);
+   }
+   noStroke();
+   ellipse(400, 50, 50, 50);
+   popStyle();
 }
 
 class Queue {
@@ -113,24 +127,31 @@ float WIDTH = 13,
       HEIGHT = 20;
 
 Graph sideWallGraph = new Graph(550, 250, color(0));
+Graph frontWallGraph = new Graph(550, 250, color(0, 0, 150));
 Graph refSideWallGraph = new Graph(550, 250, color(0, 150, 0));
+
 Graph rudderGraph = new Graph(550, 500, color(0));
+Graph dFrontWallGraph = new Graph(550, 500, color(0, 0, 150));
 //Graph dSideWallGraph = new Graph(550, 500, color(0));
-void graphs(float front, float top, float bottom, float rudderAngle, float thrust, float refSideWall) {
+void graphs(float front, float top, float bottom, float rudderAngle, float thrust, float refSideWall, float dFront) {
    resetMatrix();
    pushMatrix();
    pushStyle();
    float angle = atan((top-bottom)/HEIGHT);
    float sideWall = cos(angle)*top + WIDTH/2;
    sideWallGraph.enqueue(sideWall);
+   frontWallGraph.enqueue(front);
    refSideWallGraph.enqueue(refSideWall);
    //dSideWallGraph.enqueue(front);
    rudderGraph.enqueue(rudderAngle);
+   dFrontWallGraph.enqueue(dFront);
 
    sideWallGraph.draw();
    refSideWallGraph.draw();
+   frontWallGraph.draw();
    //dSideWallGraph.draw();
    rudderGraph.draw();
+   dFrontWallGraph.draw();
    popMatrix();
    popStyle();
 }

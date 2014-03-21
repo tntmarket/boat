@@ -8,54 +8,92 @@ enum State {
    CORNER
 };
 
-double sideWall, refSideWall=30, rudderAngle; 
-PID rudderCtrl(&sideWall, &rudderAngle, &refSideWall, 0.5, 0, 1.1, DIRECT);
+double sideWall=0, refSideWall=30, rudderAngle=0;
+PID rudderCtrl(&sideWall, &rudderAngle, &refSideWall, 1.5, 0, 0.1, DIRECT);
+
 
 double thrust; 
 
 void setup() {
    rudderCtrl.SetMode(AUTOMATIC);
-   rudderCtrl.SetOutputLimits(-25, 25);
+   rudderCtrl.SetOutputLimits(-24, 25);
    rudderCtrl.SetSampleTime(100);
    initHardware();
+
+   Serial.begin(9600);
 }
 
-void loop() {
-   static State state = STRAIGHT;
-   static unsigned long stateSwitchTime = 0, MIN_TIME_IN_STATE = 1000;
-   static double frontWall;
+#define SPEED 100
+#define MIN_TIME_IN_STATE 1000
 
-   sense(&frontWall, &sideWall);
+State state = STRAIGHT;
+double dFrontWall;
+void loop() {
+   static double frontWall = 0, angle = 0;
+
+   sense(&frontWall, &sideWall, &angle, &dFrontWall);
+
+   static unsigned int tStateSwitch = millis();
+   static unsigned int tDetectCorner = millis();
 
    switch(state) {
 
       case STRAIGHT:
-         thrust = 100;
-         rudderCtrl.Compute();
-         /*if (detectCorner(frontWall) &&*/
-             /*millis() - stateSwitchTime > MIN_TIME_IN_STATE ) {*/
+         thrust = 150;
+
+         /*if(angle > M_PI/6) {*/
             /*rudderCtrl.SetMode(MANUAL);*/
-            /*state = CORNER;*/
-            /*stateSwitchTime = millis();*/
+            /*rudderAngle = 0;*/
+         /*} else if(angle < -M_PI/6) {*/
+            /*rudderCtrl.SetMode(MANUAL);*/
+            /*rudderAngle = 0;*/
+         /*} else {*/
+            /*rudderCtrl.SetMode(AUTOMATIC);*/
+            /*rudderCtrl.Compute(sin(angle)*SPEED);*/
          /*}*/
+
+         rudderCtrl.Compute(sin(angle)*SPEED);
+
+         if(millis() - tDetectCorner > 100) {
+            tDetectCorner = millis();
+            if (detectCorner(frontWall, dFrontWall) &&
+                millis() - tStateSwitch > MIN_TIME_IN_STATE) {
+               rudderCtrl.SetMode(MANUAL);
+               tStateSwitch = millis();
+               state = CORNER;
+            }
+         }
          break;
 
       case CORNER:
-         thrust = 100; 
-         rudderAngle = 25;
-         if (detectStraight(frontWall) && 
-             millis() - stateSwitchTime > MIN_TIME_IN_STATE ) {
+         thrust = 210; 
+         rudderAngle = 35;
+         if (detectStraight(frontWall, dFrontWall) &&
+             millis() - tStateSwitch > MIN_TIME_IN_STATE) {
             rudderCtrl.SetMode(AUTOMATIC);
+            tStateSwitch = millis();
             state = STRAIGHT;
-            stateSwitchTime = millis();
          }
          break;
 
    }
 
-   setThrust(thrust);
-   setRudder(rudderAngle);
+   static unsigned int tActuate = millis();
+   if(millis() - tActuate > 2) {
+      tActuate = millis();
+      setThrust(thrust); setRudder(rudderAngle);
+      /*setThrust(0); setRudder(0);*/
+   }
 
+   static unsigned int tDump = millis();
+   if(millis() - tDump > 100) {
+      crap();
+      tDump = millis();
+      persist(front, top, bottom, rudderAngle, thrust, refSideWall);
+   }
+}
+
+void crap() {
    Serial.print(front);
    Serial.print(" ");
    Serial.print(top);
@@ -67,14 +105,24 @@ void loop() {
    Serial.print(thrust);
    Serial.print(" ");
    Serial.print(refSideWall);
+   Serial.print(" ");
+   Serial.print(state);
+   Serial.print(" ");
+   Serial.print(dFrontWall);
    Serial.println("");
-   persist(front, top, bottom, rudderAngle, thrust, refSideWall);
 }
 
-boolean detectCorner(int frontWall) {
-   return frontWall <= 30;
+int timesDetected = 0; 
+boolean detectCorner(int frontWall, int dFrontWall) {
+   if(frontWall <= 130 && frontWall > 20) {
+      timesDetected++;
+   } else {
+      timesDetected = 0;
+   }
+   return timesDetected > 10;
 }
 
-boolean detectStraight(int frontWall) {
-   return frontWall > 30;
+boolean detectStraight(int frontWall, int dFrontWall) {
+   /*return dFrontWall > 10;*/
+   return frontWall > 100;
 }

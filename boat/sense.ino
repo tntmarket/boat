@@ -1,19 +1,34 @@
 #include "sense.h"
 #include "hardware.h"
 
-void sense(double *frontWall, double *sideWall) {
 
-   delay(50);
-   top = getTop(); 
-   delay(50);
-   front = getFront();
-   bottom = getBottom();
+enum ToSense {
+   TOP,
+   FRONT_SIDE 
+};
 
-   *sideWall = cos(angle(top, bottom)) * (top + bottom)/2;
-   *frontWall = cos(angle(top, bottom)) * front;
-}
+ToSense nextSense = FRONT_SIDE;
 
-double angle(double top, double bottom) {
+double lastFront = 0;
+void sense(double *frontWall, double *sideWall, double *angle, double *dFrontWall) {
+   static unsigned int t = millis();
    static double LENGTH = 15;
-   return atan((top - bottom)/LENGTH);
+   
+   if(millis() - t > 40) {
+      if(nextSense == TOP) {
+         top = getTop(); 
+         nextSense = FRONT_SIDE;
+      } else {
+         front = getFront();
+         bottom = getBottom();
+         nextSense = TOP;
+      }
+      t = millis();
+      *angle = atan((top - bottom)/LENGTH);
+      *sideWall = cos(*angle) * (top + bottom)/2;
+      *frontWall = front;
+      *dFrontWall = front - lastFront;
+
+      lastFront = front;
+   }
 }
