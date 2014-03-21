@@ -39,7 +39,7 @@ void loop() {
    switch(state) {
 
       case STRAIGHT:
-         thrust = 150;
+         thrust = 200;
 
          /*if(angle > M_PI/6) {*/
             /*rudderCtrl.SetMode(MANUAL);*/
@@ -66,7 +66,7 @@ void loop() {
          break;
 
       case CORNER:
-         thrust = 210; 
+         thrust = 255; 
          rudderAngle = 35;
          if (detectStraight(frontWall, dFrontWall) &&
              millis() - tStateSwitch > MIN_TIME_IN_STATE) {
@@ -114,12 +114,12 @@ void crap() {
 
 int timesDetected = 0; 
 boolean detectCorner(int frontWall, int dFrontWall) {
-   if(frontWall <= 130 && frontWall > 20) {
+   if(frontWall <= 100 && frontWall > 50) {
       timesDetected++;
    } else {
       timesDetected = 0;
    }
-   return timesDetected > 10;
+   return timesDetected > 6;
 }
 
 boolean detectStraight(int frontWall, int dFrontWall) {
