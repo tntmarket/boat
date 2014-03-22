@@ -7,8 +7,7 @@ int last_value;
 unsigned char data[MAX_EEPROM];
 
 void start_writing();
-void persist(double front, double top, double bottom,
-             double rudderAngle, double thrust, double refSideWall);
+void persist(double front, double top, double bottom);
 void recall();
 
 #endif

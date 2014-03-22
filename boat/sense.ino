@@ -9,10 +9,10 @@ enum ToSense {
 
 ToSense nextSense = FRONT_SIDE;
 
-double lastFront = 0;
-void sense(double *frontWall, double *sideWall, double *angle, double *dFrontWall) {
+void sense(double *frontWall, double *sideWall, double *angle) {
    static unsigned int t = millis();
    static double LENGTH = 15;
+   static double a = 1;
    
    if(millis() - t > 40) {
       if(nextSense == TOP) {
@@ -26,9 +26,20 @@ void sense(double *frontWall, double *sideWall, double *angle, double *dFrontWal
       t = millis();
       *angle = atan((top - bottom)/LENGTH);
       *sideWall = cos(*angle) * (top + bottom)/2;
-      *frontWall = front;
-      *dFrontWall = front - lastFront;
 
-      lastFront = front;
+      *frontWall = front;
    }
 }
+
+/*double lastFront = 0;*/
+/*double expAverageFront = -1;*/
+/*void filter() {*/
+   /*if(expAverageFront == -1) {*/
+      /*expAverageFront = front;*/
+   /*} else {*/
+      /*expAverageFront = a*lastFront + (1-a)*expAverageFront;*/
+   /*}*/
+
+   /**frontWall = expAverageFront;*/
+   /*lastFront = front;*/
+/*}*/

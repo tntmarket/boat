@@ -24,7 +24,7 @@ double getTop() {
    static NewPing top(TOP_TRIGGER_PIN,
                       TOP_ECHO_PIN,
                       MAX_DISTANCE_SIDE);
-   return cm(top.ping(), MAX_DISTANCE_SIDE) - 1;
+   return cm(top.ping(), MAX_DISTANCE_SIDE);
 }
 
 #define BOTTOM_TRIGGER_PIN 4
@@ -63,6 +63,6 @@ void initHardware() {
    setThrust(0);
    setRudder(0);
 
-   /*start_writing();*/
+   start_writing();
 }
 

@@ -12,6 +12,7 @@ float[] readSensors() {
    if (boat.available() > 0) {
       String msg = boat.readStringUntil('\n');
       if (msg != null) {
+         println(msg);
          return float(msg.split(" "));
       }
    }
@@ -23,11 +24,10 @@ int m;
 
 void draw() {
    float[] values = readSensors();
-   //float[] values = {170, 30, 30, 25, 255, 30};
-   if(values.length >= 8) {
+   if(values.length >= 7) {
       background(200);
       boatDiagram(values[0], values[1], values[2], values[3], values[4], values[5]);
-      graphs(values[0], values[1], values[2], values[3], values[4], values[5], values[7]);
+      graphs(values[0], values[1], values[2], values[3], values[4], values[5]);
       drawState(values[6]);
    }
 }
@@ -131,9 +131,8 @@ Graph frontWallGraph = new Graph(550, 250, color(0, 0, 150));
 Graph refSideWallGraph = new Graph(550, 250, color(0, 150, 0));
 
 Graph rudderGraph = new Graph(550, 500, color(0));
-Graph dFrontWallGraph = new Graph(550, 500, color(0, 0, 150));
 //Graph dSideWallGraph = new Graph(550, 500, color(0));
-void graphs(float front, float top, float bottom, float rudderAngle, float thrust, float refSideWall, float dFront) {
+void graphs(float front, float top, float bottom, float rudderAngle, float thrust, float refSideWall) {
    resetMatrix();
    pushMatrix();
    pushStyle();
@@ -144,14 +143,12 @@ void graphs(float front, float top, float bottom, float rudderAngle, float thrus
    refSideWallGraph.enqueue(refSideWall);
    //dSideWallGraph.enqueue(front);
    rudderGraph.enqueue(rudderAngle);
-   dFrontWallGraph.enqueue(dFront);
 
    sideWallGraph.draw();
    refSideWallGraph.draw();
    frontWallGraph.draw();
    //dSideWallGraph.draw();
    rudderGraph.draw();
-   dFrontWallGraph.draw();
    popMatrix();
    popStyle();
 }
