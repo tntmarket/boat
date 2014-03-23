@@ -12,7 +12,7 @@ enum State {
 double sideWall=0, refSideWall=25, rudderAngle=0;
 PID rudderCtrl(&sideWall, &rudderAngle, &refSideWall, 1, 0.1, 0.25, DIRECT);
 
-double thrust; 
+double thrust;
 
 unsigned int now;
 unsigned int tStateSwitch;
@@ -34,7 +34,7 @@ void setup() {
 }
 
 #define SPEED 100
-#define MIN_TIME_IN_TURN 1000
+#define MIN_TIME_IN_TURN 800
 #define MIN_TIME_IN_STRAIGHT 500
 
 State state = STRAIGHT;
@@ -48,19 +48,14 @@ void loop() {
 
       case STRAIGHT:
          thrust = 40;
-
          rudderCtrl.Compute(sin(angle)*SPEED);
-
-         /*if(now - tStateSwitch > 5000) {*/
-            /*tStateSwitch = now;*/
-            /*state = STOPPED;*/
-         /*}*/
 
          if(now - tDetectCorner > POLLING_RATE) {
             tDetectCorner = now;
             if (detectCorner(frontWall) &&
                 now - tStateSwitch > MIN_TIME_IN_STRAIGHT) {
                rudderCtrl.SetMode(MANUAL);
+               rudderCtrl.ClearHistory();
                tStateSwitch = now;
                state = CORNER;
             }
@@ -78,10 +73,12 @@ void loop() {
             state = STRAIGHT;
          }
          break;
+
       case STOPPED:
          thrust = 0;
          rudderAngle = 0;
          break;
+
    }
 
    if(now - tActuate > 1) {
@@ -97,19 +94,16 @@ void loop() {
    }
 }
 
-/*boolean detectCorner(int frontWall) {*/
-   /*return frontWall <= 100;*/
-/*}*/
-
 int timesDetected = 0; 
 
 boolean detectCorner(int frontWall) {
-  if(frontWall <= 130) {
-     timesDetected++;
-  } else {
-     timesDetected = 0;
-  }
-  return timesDetected >= 1;
+  /*if(frontWall <= 130) {*/
+     /*timesDetected++;*/
+  /*} else {*/
+     /*timesDetected = 0;*/
+  /*}*/
+  /*return timesDetected >= 1;*/
+  return frontWall <= 120;
 }
 
 boolean detectStraight(int frontWall) {
