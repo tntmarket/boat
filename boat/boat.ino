@@ -9,18 +9,28 @@ enum State {
    STOPPED 
 };
 
-double sideWall=0, refSideWall=20, rudderAngle=0;
-PID rudderCtrl(&sideWall, &rudderAngle, &refSideWall, 1.4, 0, 0.2, DIRECT);
+double sideWall=0, refSideWall=30, rudderAngle=0;
+PID rudderCtrl(&sideWall, &rudderAngle, &refSideWall, 1, 0, 0.25, DIRECT);
 
 double thrust; 
 
+unsigned int now;
+unsigned int tStateSwitch;
+unsigned int tDetectCorner;
+unsigned int tActuate;
+unsigned int tDump;
 void setup() {
    rudderCtrl.SetMode(AUTOMATIC);
    rudderCtrl.SetOutputLimits(-25, 25);
-   rudderCtrl.SetSampleTime(100);
+   rudderCtrl.SetSampleTime(POLLING_RATE*2);
    initHardware();
-
    Serial.begin(9600);
+
+   now = millis();
+   tStateSwitch = millis();
+   tDetectCorner = millis();
+   tActuate = millis();
+   tDump = millis();
 }
 
 #define SPEED 100
@@ -28,66 +38,79 @@ void setup() {
 #define MIN_TIME_IN_STRAIGHT 1000
 
 State state = STRAIGHT;
-double frontWall = 0;
+double frontWall = 0, angle = 0;
 void loop() {
-   static double angle = 0;
+   now = millis();
 
    sense(&frontWall, &sideWall, &angle);
-
-   static unsigned int tStateSwitch = millis();
-   static unsigned int tDetectCorner = millis();
 
    switch(state) {
 
       case STRAIGHT:
-         thrust = 100;
+         thrust = 40;
 
          rudderCtrl.Compute(sin(angle)*SPEED);
-         if(millis() - tStateSwitch > 3000) {
-            state = STOPPED;
-         }
-         /*if(millis() - tDetectCorner > 100) {*/
-            /*tDetectCorner = millis();*/
-            /*if (detectCorner(frontWall) &&*/
-                /*millis() - tStateSwitch > MIN_TIME_IN_STRAIGHT) {*/
-               /*rudderCtrl.SetMode(MANUAL);*/
-               /*tStateSwitch = millis();*/
-               /*state = CORNER;*/
-            /*}*/
+
+         /*if(now - tStateSwitch > 5000) {*/
+            /*tStateSwitch = now;*/
+            /*state = STOPPED;*/
          /*}*/
+
+         if(now - tDetectCorner > POLLING_RATE) {
+            tDetectCorner = now;
+            if (detectCorner(frontWall) &&
+                now - tStateSwitch > MIN_TIME_IN_STRAIGHT) {
+               rudderCtrl.SetMode(MANUAL);
+               tStateSwitch = now;
+               /*state = CORNER;*/
+               state = STOPPED;
+            }
+         }
+
          break;
 
       case CORNER:
-         thrust = 100; 
-         rudderAngle = 35;
-         if (detectStraight(frontWall) &&
-             millis() - tStateSwitch > MIN_TIME_IN_TURN) {
-            rudderCtrl.SetMode(AUTOMATIC);
-            tStateSwitch = millis();
-            state = STRAIGHT;
-         }
+         thrust = 40;
+         rudderAngle = 34;
+         /*if (detectStraight(frontWall) &&*/
+             /*now - tStateSwitch > MIN_TIME_IN_TURN) {*/
+            /*rudderCtrl.SetMode(AUTOMATIC);*/
+            /*tStateSwitch = now;*/
+            /*state = STRAIGHT;*/
+         /*}*/
          break;
       case STOPPED:
-         setThrust(0); setRudder(0);
-         return;
+         thrust = 0;
+         rudderAngle = 0;
+         break;
    }
 
-   static unsigned int tActuate = millis();
-   if(millis() - tActuate > 2) {
-      tActuate = millis();
+   if(now - tActuate > 1) {
+      tActuate = now;
       setThrust(thrust); setRudder(rudderAngle);
+      /*setThrust(0); setRudder(0);*/
    }
 
-   static unsigned int tDump = millis();
-   if(millis() - tDump > 100) {
+   if(now - tDump > POLLING_RATE) {
+      tDump = now;
       crap();
-      tDump = millis();
-      persist(frontWall, top, bottom);
+      persist(front, top, bottom);
    }
 }
 
+/*boolean detectCorner(int frontWall) {*/
+   /*return frontWall <= 100;*/
+/*}*/
+
+int timesDetected = 0; 
+
 boolean detectCorner(int frontWall) {
-   return frontWall <= 100;
+  if(frontWall <= 130) {
+     timesDetected++;
+  } else {
+     timesDetected = 0;
+  }
+  return timesDetected >= 1;
 }
 
 boolean detectStraight(int frontWall) {
@@ -108,6 +131,8 @@ void crap() {
    Serial.print(refSideWall);
    Serial.print(" ");
    Serial.print(state);
+   Serial.print(" ");
+   Serial.print(sin(angle)*SPEED);
    Serial.println("");
 }
 

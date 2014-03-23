@@ -8,27 +8,35 @@ double cm(int ping, int max) {
 }
 
 #define MAX_DISTANCE_FRONT 200
-#define FRONT_TRIGGER_PIN 7
-#define FRONT_ECHO_PIN  6
+#define FRONT_ECHO_PIN  5
+#define FRONT_TRIGGER_PIN 4
+
+#define MAX_DISTANCE_SIDE 100
+#define TOP_ECHO_PIN  6
+#define TOP_TRIGGER_PIN  7
+#define BOTTOM_ECHO_PIN  12
+#define BOTTOM_TRIGGER_PIN 11
+
 double getFront() {
-   static NewPing front(FRONT_TRIGGER_PIN,
-                        FRONT_ECHO_PIN,
+   /*static NewPing front(FRONT_TRIGGER_PIN,*/
+                        /*FRONT_ECHO_PIN,*/
+                        /*MAX_DISTANCE_FRONT);*/
+   static NewPing front(TOP_TRIGGER_PIN,
+                        TOP_ECHO_PIN,
                         MAX_DISTANCE_FRONT);
    return cm(front.ping(), MAX_DISTANCE_FRONT);
 }
 
-#define MAX_DISTANCE_SIDE 100
-#define TOP_TRIGGER_PIN 11
-#define TOP_ECHO_PIN  12
 double getTop() {
-   static NewPing top(TOP_TRIGGER_PIN,
-                      TOP_ECHO_PIN,
+   /*static NewPing top(TOP_TRIGGER_PIN,*/
+                      /*TOP_ECHO_PIN,*/
+                      /*MAX_DISTANCE_SIDE);*/
+   static NewPing top(FRONT_TRIGGER_PIN,
+                      FRONT_ECHO_PIN,
                       MAX_DISTANCE_SIDE);
    return cm(top.ping(), MAX_DISTANCE_SIDE);
 }
 
-#define BOTTOM_TRIGGER_PIN 4
-#define BOTTOM_ECHO_PIN  5
 double getBottom() {
    static NewPing bottom(BOTTOM_TRIGGER_PIN,
                          BOTTOM_ECHO_PIN,
@@ -45,10 +53,10 @@ void setThrust(int thrust) {
 Servo rudder;
 int currentAngle = 0;
 void setRudder(int angle) {
-   if(angle > currentAngle + 1) {
-      angle = currentAngle + 1;
-   } else if(angle < currentAngle - 1) {
-      angle = currentAngle - 1;
+   if(angle > currentAngle + 3) {
+      angle = currentAngle + 3;
+   } else if(angle < currentAngle - 3) {
+      angle = currentAngle - 3;
    }
    currentAngle = angle;
    rudder.write(98 - angle);

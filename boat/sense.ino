@@ -9,28 +9,38 @@ enum ToSense {
 
 ToSense nextSense = FRONT_SIDE;
 
+unsigned int tSense = now; 
+double LENGTH = 15;
+double FILTER_THRESHOLD_FRONT = 30;
+double FILTER_THRESHOLD = 100;
 void sense(double *frontWall, double *sideWall, double *angle) {
-   static unsigned int t = millis();
-   static double LENGTH = 15;
-   static double a = 1;
-   
-   if(millis() - t > 40) {
+   double newFront = front,
+          newTop = top,
+          newBottom = bottom;
+   if(now - tSense > POLLING_RATE) {
       if(nextSense == TOP) {
-         top = getTop(); 
+         newFront = getFront();
+         newTop = getTop(); 
          nextSense = FRONT_SIDE;
       } else {
-         front = getFront();
-         bottom = getBottom();
+         newFront = getFront();
+         newBottom = getBottom();
          nextSense = TOP;
       }
-      t = millis();
-      *angle = atan((top - bottom)/LENGTH);
-      *sideWall = cos(*angle) * (top + bottom)/2;
+      tSense = now;
 
+      front =  newFront  > (front  - FILTER_THRESHOLD_FRONT) ? newFront  : front;
+      top =    newTop    > (top    - FILTER_THRESHOLD      ) ? newTop    : top;
+      bottom = newBottom > (bottom - FILTER_THRESHOLD      ) ? newBottom : bottom;
+
+      *angle = atan((top - bottom)/LENGTH);
       *frontWall = front;
+      *sideWall = cos(*angle) * (top + bottom)/2;
    }
 }
 
+
+/*static double a = 1;*/
 /*double lastFront = 0;*/
 /*double expAverageFront = -1;*/
 /*void filter() {*/

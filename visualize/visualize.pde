@@ -28,6 +28,8 @@ void draw() {
       background(200);
       boatDiagram(values[0], values[1], values[2], values[3], values[4], values[5]);
       graphs(values[0], values[1], values[2], values[3], values[4], values[5]);
+      //boatDiagram(values[2], values[1], values[0], values[3], values[4], values[5]);
+      //graphs(values[2], values[1], values[0], values[3], values[4], values[5]);
       drawState(values[6]);
    }
 }
@@ -126,26 +128,28 @@ class Graph {
 float WIDTH = 13,
       HEIGHT = 20;
 
-Graph sideWallGraph = new Graph(550, 250, color(0));
+//Graph sideWallGraph = new Graph(550, 250, color(0));
+Graph topGraph = new Graph(550, 250, color(0));
+Graph bottomGraph = new Graph(550, 250, color(150, 0, 0));
 Graph frontWallGraph = new Graph(550, 250, color(0, 0, 150));
-Graph refSideWallGraph = new Graph(550, 250, color(0, 150, 0));
+//Graph refSideWallGraph = new Graph(550, 250, color(0, 150, 0));
 
 Graph rudderGraph = new Graph(550, 500, color(0));
-//Graph dSideWallGraph = new Graph(550, 500, color(0));
 void graphs(float front, float top, float bottom, float rudderAngle, float thrust, float refSideWall) {
    resetMatrix();
    pushMatrix();
    pushStyle();
    float angle = atan((top-bottom)/HEIGHT);
    float sideWall = cos(angle)*top + WIDTH/2;
-   sideWallGraph.enqueue(sideWall);
+   topGraph.enqueue(top);
+   bottomGraph.enqueue(bottom);
    frontWallGraph.enqueue(front);
-   refSideWallGraph.enqueue(refSideWall);
-   //dSideWallGraph.enqueue(front);
+   //refSideWallGraph.enqueue(refSideWall);
    rudderGraph.enqueue(rudderAngle);
 
-   sideWallGraph.draw();
-   refSideWallGraph.draw();
+   topGraph.draw();
+   bottomGraph.draw();
+   //refSideWallGraph.draw();
    frontWallGraph.draw();
    //dSideWallGraph.draw();
    rudderGraph.draw();
