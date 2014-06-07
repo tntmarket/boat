@@ -35,10 +35,11 @@ void setup() {
 
 #define SPEED 100
 #define MIN_TIME_IN_TURN 800
-#define MIN_TIME_IN_STRAIGHT 500
+#define MIN_TIME_IN_STRAIGHT 1000
 
 State state = STRAIGHT;
 double frontWall = 0, angle = 0;
+int cornerCount = 0;
 void loop() {
    now = millis();
 
@@ -57,7 +58,13 @@ void loop() {
                rudderCtrl.SetMode(MANUAL);
                rudderCtrl.ClearHistory();
                tStateSwitch = now;
-               state = CORNER;
+               /*state = CORNER;*/
+               cornerCount++;
+               if(cornerCount >= 4) {
+                  state = STOPPED;
+               } else {
+                  state = CORNER;
+               }
             }
          }
 
@@ -90,7 +97,7 @@ void loop() {
    if(now - tDump > POLLING_RATE) {
       tDump = now;
       crap();
-      persist(front, top, bottom);
+      persist(frontWall, top, bottom);
    }
 }
 

@@ -11,7 +11,7 @@ ToSense nextSense = FRONT_SIDE;
 
 unsigned int tSense = now; 
 double LENGTH = 15;
-double FILTER_THRESHOLD_FRONT = 40;
+double FILTER_THRESHOLD_FRONT = 200;
 double FILTER_THRESHOLD = 100;
 void sense(double *frontWall, double *sideWall, double *angle) {
    double newFront = front,

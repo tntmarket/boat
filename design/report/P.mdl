@@ -1,12 +1,12 @@
 Model {
-  Name			  "cross_track_error"
+  Name			  "P"
   Version		  7.9
   MdlSubVersion		  0
   GraphicalInterface {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.408"
+    ComputedModelVersion    "1.392"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -18,7 +18,7 @@ Model {
       Type		      "Cell"
       Dimension		      2
       Cell		      "HDLSubsystem"
-      Cell		      "cross_track_error"
+      Cell		      "P"
       PropName		      "mdlProps"
     }
   }
@@ -38,9 +38,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "dave"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Mar 26 19:30:37 2014"
-  RTWModifiedTimeStamp	  317761863
-  ModelVersionFormat	  "1.%<AutoIncrement:408>"
+  LastModifiedDate	  "Wed Mar 26 18:23:11 2014"
+  RTWModifiedTimeStamp	  317758985
+  ModelVersionFormat	  "1.%<AutoIncrement:392>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -77,13 +77,13 @@ Model {
     $PropName		    "DataLoggingOverride"
     $ObjectID		    2
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
-    model_		    "cross_track_error"
+    model_		    "P"
     signals_		    []
     overrideMode_	    [0.0]
     Array {
       Type		      "Cell"
       Dimension		      1
-      Cell		      "cross_track_error"
+      Cell		      "P"
       PropName		      "logAsSpecifiedByModels_"
     }
     Array {
@@ -146,7 +146,7 @@ Model {
 	  StartTime		  "0.0"
 	  StopTime		  "10"
 	  AbsTol		  "auto"
-	  FixedStep		  "0.05"
+	  FixedStep		  "auto"
 	  InitialStep		  "auto"
 	  MaxNumMinSteps	  "-1"
 	  MaxOrder		  5
@@ -638,7 +638,7 @@ Model {
       }
       Name		      "Configuration"
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition     [ 1607, 119, 2612, 1025 ] 
+      ConfigPrmDlgPosition     [ 213, 448, 1203, 1176 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -680,42 +680,6 @@ Model {
   }
   BlockParameterDefaults {
     Block {
-      BlockType		      Constant
-      Value		      "1"
-      VectorParams1D	      on
-      SamplingMode	      "Sample based"
-      OutMin		      "[]"
-      OutMax		      "[]"
-      OutDataTypeStr	      "Inherit: Inherit from 'Constant value'"
-      LockScale		      off
-      SampleTime	      "inf"
-      FramePeriod	      "inf"
-      PreserveConstantTs      off
-    }
-    Block {
-      BlockType		      Gain
-      Gain		      "1"
-      Multiplication	      "Element-wise(K.*u)"
-      ParamMin		      "[]"
-      ParamMax		      "[]"
-      ParamDataTypeStr	      "Inherit: Same as input"
-      OutMin		      "[]"
-      OutMax		      "[]"
-      OutDataTypeStr	      "Inherit: Same as input"
-      LockScale		      off
-      RndMeth		      "Floor"
-      SaturateOnIntegerOverflow	on
-      SampleTime	      "-1"
-    }
-    Block {
-      BlockType		      Mux
-      Inputs		      "4"
-      DisplayOption	      "none"
-      UseBusObject	      off
-      BusObject		      "BusObject"
-      NonVirtualBus	      off
-    }
-    Block {
       BlockType		      Saturate
       UpperLimitSource	      "Dialog"
       UpperLimit	      "0.5"
@@ -731,31 +695,13 @@ Model {
       RndMeth		      "Floor"
     }
     Block {
-      BlockType		      Scope
-      ModelBased	      off
-      TickLabels	      "OneTimeTick"
-      ZoomMode		      "on"
-      Grid		      "on"
-      TimeRange		      "auto"
-      YMin		      "-5"
-      YMax		      "5"
-      SaveToWorkspace	      off
-      SaveName		      "ScopeData"
-      DataFormat	      "Array"
-      LimitDataPoints	      on
-      MaxDataPoints	      "5000"
-      Decimation	      "1"
-      SampleInput	      off
+      BlockType		      Step
+      Time		      "1"
+      Before		      "0"
+      After		      "1"
       SampleTime	      "-1"
-    }
-    Block {
-      BlockType		      SignalGenerator
-      WaveForm		      "sine"
-      TimeSource	      "Use simulation time"
-      Amplitude		      "1"
-      Frequency		      "1"
-      Units		      "Hertz"
       VectorParams1D	      on
+      ZeroCross		      on
     }
     Block {
       BlockType		      Sum
@@ -783,8 +729,8 @@ Model {
     }
   }
   System {
-    Name		    "cross_track_error"
-    Location		    [1658, 320, 2940, 936]
+    Name		    "P"
+    Location		    [1366, 69, 3286, 1080]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -798,37 +744,26 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "79"
-    Block {
-      BlockType		      Mux
-      Name		      "Mux1"
-      SID		      "17"
-      Ports		      [3, 1]
-      Position		      [905, 182, 915, 258]
-      ZOrder		      -12
-      ShowName		      off
-      Inputs		      "3"
-      DisplayOption	      "bar"
-    }
+    SIDHighWatermark	    "87"
     Block {
       BlockType		      Reference
-      Name		      "PI Controller"
+      Name		      "P Controller"
       SID		      "10"
       Ports		      [1, 1]
-      Position		      [315, 267, 370, 303]
+      Position		      [285, 72, 340, 108]
       ZOrder		      -6
       LibraryVersion	      "1.260"
       SourceBlock	      "simulink/Continuous/PID Controller"
       SourceType	      "PID 1dof"
-      Controller	      "PI"
+      Controller	      "P"
       TimeDomain	      "Continuous-time"
       SampleTime	      "1"
       IntegratorMethod	      "Forward Euler"
       FilterMethod	      "Forward Euler"
       Form		      "Parallel"
-      P			      "Kp"
-      I			      "Ki"
-      D			      "Kdd"
+      P			      "2.6"
+      I			      "0.3"
+      D			      "0"
       N			      "7.02962681019428"
       InitialConditionSource  "internal"
       InitialConditionForIntegrator "0"
@@ -923,7 +858,7 @@ Model {
       BlockType		      TransferFcn
       Name		      "Rudder Equation"
       SID		      "7"
-      Position		      [625, 267, 660, 303]
+      Position		      [505, 72, 540, 108]
       ZOrder		      -9
       Numerator		      "[A*v^2]"
       Denominator	      "[1 0]"
@@ -939,7 +874,7 @@ Model {
       Name		      "Saturation"
       SID		      "40"
       Ports		      [1, 1]
-      Position		      [455, 269, 490, 301]
+      Position		      [385, 74, 420, 106]
       ZOrder		      -15
       InputPortMap	      "u0"
       UpperLimit	      "25"
@@ -952,84 +887,27 @@ Model {
       }
     }
     Block {
-      BlockType		      Scope
-      Name		      "Scope"
-      SID		      "15"
-      Ports		      [3]
-      Position		      [950, 110, 990, 210]
-      ZOrder		      -16
-      Floating		      off
-      Location		      [1468, 65, 3388, 1079]
-      Open		      off
-      NumInputPorts	      "3"
-      List {
-	ListType		AxesTitles
-	axes1			"%<SignalLabel>"
-	axes2			"%<SignalLabel>"
-	axes3			"%<SignalLabel>"
+      BlockType		      TransferFcn
+      Name		      "Sin of Speed"
+      SID		      "8"
+      Position		      [640, 70, 705, 110]
+      ZOrder		      -9
+      Numerator		      "[pi*v/180]"
+      Denominator	      "[1 0]"
+      Port {
+	PortNumber		1
+	Name			"distance\nfrom wall"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
       }
-      List {
-	ListType		ScopeGraphics
-	FigureColor		"[1 1 1]"
-	AxesColor		"[0.941176470588235 0.941176470588235 0.941176470588235]"
-	AxesTickColor		"[0 0 0]"
-	LineColors		"[0 0 0;0 0 1;1 0 0;1 0 0;0 1 0;0 0 1]"
-	LineStyles		"-|-|-|-|-|-"
-	LineWidths		"[0.5 0.5 0.5 0.5 0.5 0.5]"
-	MarkerStyles		"none|none|none|none|none|none"
-      }
-      ShowLegends	      on
-      LegendLocations	      "0.89975     0.94403     0.08151    0.019724\n0.91539     0.62747    0.065885    0.019724\n"
-      " 0.8961     0.27909    0.084635    0.050542"
-      TimeRange		      "10"
-      YMin		      "-50~-25~-60"
-      YMax		      "50~25~60"
-      SaveToWorkspace	      on
-      DataFormat	      "StructureWithTime"
+    }
+    Block {
+      BlockType		      Step
+      Name		      "Step"
+      SID		      "87"
+      Position		      [60, 75, 90, 105]
+      ZOrder		      -22
       SampleTime	      "0"
-    }
-    Block {
-      BlockType		      Reference
-      Name		      "Side Sensor Noise\n(Average Distance)"
-      SID		      "25"
-      Ports		      [0, 1]
-      Position		      [925, 385, 955, 415]
-      ZOrder		      -2
-      BlockMirror	      on
-      LibraryVersion	      "1.260"
-      SourceBlock	      "simulink/Sources/Band-Limited\nWhite Noise"
-      SourceType	      "Band-Limited White Noise."
-      Cov		      "[0.01]"
-      Ts		      "0.05"
-      seed		      "[23341]"
-      VectorParams1D	      on
-    }
-    Block {
-      BlockType		      Reference
-      Name		      "Side Sensor Noise (Angle)"
-      SID		      "51"
-      Ports		      [0, 1]
-      Position		      [705, 435, 735, 465]
-      ZOrder		      -2
-      BlockMirror	      on
-      LibraryVersion	      "1.260"
-      SourceBlock	      "simulink/Sources/Band-Limited\nWhite Noise"
-      SourceType	      "Band-Limited White Noise."
-      Cov		      "[0.01]"
-      Ts		      "0.05"
-      seed		      "[2352351]"
-      VectorParams1D	      on
-    }
-    Block {
-      BlockType		      SignalGenerator
-      Name		      "Signal\nGenerator"
-      SID		      "69"
-      Ports		      [0, 1]
-      Position		      [105, 270, 135, 300]
-      ZOrder		      -19
-      WaveForm		      "square"
-      Amplitude		      "20"
-      Frequency		      "0.25"
       Port {
 	PortNumber		1
 	Name			"reference"
@@ -1038,36 +916,11 @@ Model {
       }
     }
     Block {
-      BlockType		      TransferFcn
-      Name		      "Sin of Speed"
-      SID		      "8"
-      Position		      [745, 265, 810, 305]
-      ZOrder		      -9
-      Numerator		      "[pi*v/180]"
-      Denominator	      "[1 0]"
-      Port {
-	PortNumber		1
-	Name			"wall\ndistance"
-	RTWStorageClass		"Auto"
-	DataLoggingNameMode	"SignalName"
-      }
-    }
-    Block {
-      BlockType		      Constant
-      Name		      "Steering Bias"
-      SID		      "24"
-      Position		      [560, 355, 590, 385]
-      ZOrder		      -5
-      BlockRotation	      270
-      NamePlacement	      "alternate"
-      Value		      "D"
-    }
-    Block {
       BlockType		      Sum
       Name		      "Sum"
       SID		      "11"
       Ports		      [2, 1]
-      Position		      [210, 275, 230, 295]
+      Position		      [170, 80, 190, 100]
       ZOrder		      -18
       ShowName		      off
       IconShape		      "round"
@@ -1082,234 +935,56 @@ Model {
 	DataLoggingNameMode	"SignalName"
       }
     }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum1"
-      SID		      "18"
-      Ports		      [2, 1]
-      Position		      [565, 275, 585, 295]
-      ZOrder		      -18
-      ShowName		      off
-      IconShape		      "round"
-      Inputs		      "|++"
-      InputSameDT	      off
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum2"
-      SID		      "28"
-      Ports		      [2, 1]
-      Position		      [865, 390, 885, 410]
-      ZOrder		      -18
-      BlockRotation	      270
-      BlockMirror	      on
-      NamePlacement	      "alternate"
-      ShowName		      off
-      IconShape		      "round"
-      Inputs		      "|++"
-      InputSameDT	      off
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum3"
-      SID		      "42"
-      Ports		      [2, 1]
-      Position		      [405, 275, 425, 295]
-      ZOrder		      -18
-      ShowName		      off
-      IconShape		      "round"
-      Inputs		      "|+-"
-      InputSameDT	      off
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum4"
-      SID		      "76"
-      Ports		      [2, 1]
-      Position		      [650, 405, 670, 425]
-      ZOrder		      -18
-      BlockMirror	      on
-      ShowName		      off
-      IconShape		      "round"
-      Inputs		      "|++"
-      InputSameDT	      off
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Gain
-      Name		      "boat angle feedback gain"
-      SID		      "47"
-      Position		      [535, 400, 585, 430]
-      ZOrder		      -8
-      BlockMirror	      on
-      Gain		      "Kd"
-      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
     Line {
       Name		      "cross track\nerror"
       Labels		      [0, 0]
       SrcBlock		      "Sum"
       SrcPort		      1
-      Points		      [45, 0]
-      Branch {
-	DstBlock		"PI Controller"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, -160]
-	DstBlock		"Scope"
-	DstPort			1
-      }
+      DstBlock		      "P Controller"
+      DstPort		      1
     }
     Line {
       Name		      "reference"
       Labels		      [0, 0]
-      SrcBlock		      "Signal\nGenerator"
+      SrcBlock		      "Step"
       SrcPort		      1
-      Points		      [25, 0]
-      Branch {
-	DstBlock		"Sum"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, -90]
-	DstBlock		"Mux1"
-	DstPort			1
-      }
+      DstBlock		      "Sum"
+      DstPort		      1
     }
     Line {
-      SrcBlock		      "Mux1"
-      SrcPort		      1
-      Points		      [10, 0; 0, -25]
-      DstBlock		      "Scope"
-      DstPort		      3
-    }
-    Line {
-      Name		      "wall\ndistance"
+      Name		      "distance\nfrom wall"
       Labels		      [0, 1]
       SrcBlock		      "Sin of Speed"
       SrcPort		      1
-      Points		      [60, 0]
-      Branch {
-	Points			[0, -40]
-	DstBlock		"Mux1"
-	DstPort			3
-      }
-      Branch {
-	DstBlock		"Sum2"
-	DstPort			1
-      }
+      Points		      [45, 0; 0, 95; -575, 0]
+      DstBlock		      "Sum"
+      DstPort		      2
     }
     Line {
       Name		      "rudder\nangle"
       Labels		      [1, 0]
       SrcBlock		      "Saturation"
       SrcPort		      1
-      Points		      [45, 0]
-      Branch {
-	Points			[0, -125]
-	DstBlock		"Scope"
-	DstPort			2
-      }
-      Branch {
-	DstBlock		"Sum1"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "PI Controller"
-      SrcPort		      1
-      DstBlock		      "Sum3"
+      DstBlock		      "Rudder Equation"
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Sum3"
+      SrcBlock		      "P Controller"
       SrcPort		      1
       DstBlock		      "Saturation"
       DstPort		      1
     }
     Line {
-      SrcBlock		      "boat angle feedback gain"
-      SrcPort		      1
-      Points		      [-115, 0]
-      DstBlock		      "Sum3"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Steering Bias"
-      SrcPort		      1
-      DstBlock		      "Sum1"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Sum1"
-      SrcPort		      1
-      DstBlock		      "Rudder Equation"
-      DstPort		      1
-    }
-    Line {
       Name		      "boat angle"
+      Labels		      [1, 0]
       SrcBlock		      "Rudder Equation"
       SrcPort		      1
-      Points		      [40, 0]
-      Branch {
-	DstBlock		"Sin of Speed"
-	DstPort			1
-      }
-      Branch {
-	Labels			[1, 1]
-	Points			[0, -65]
-	DstBlock		"Mux1"
-	DstPort			2
-      }
-      Branch {
-	Points			[0, 0; 0, 130]
-	DstBlock		"Sum4"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Sum4"
-      SrcPort		      1
-      DstBlock		      "boat angle feedback gain"
+      DstBlock		      "Sin of Speed"
       DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Side Sensor Noise (Angle)"
-      SrcPort		      1
-      Points		      [-40, 0]
-      DstBlock		      "Sum4"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Sum2"
-      SrcPort		      1
-      Points		      [0, 75; -655, 0]
-      DstBlock		      "Sum"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Side Sensor Noise\n(Average Distance)"
-      SrcPort		      1
-      DstBlock		      "Sum2"
-      DstPort		      2
     }
     Annotation {
       SID		      "56"
-      Position		      [640, 281]
-    }
-    Annotation {
-      SID		      "54"
-      Position		      [706, 368]
+      Position		      [470, 86]
     }
   }
 }
